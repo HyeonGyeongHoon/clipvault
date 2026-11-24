@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ClipVault (클립볼트)</title>
+  <!-- 스타일과 스크립트는 같은 폴더의 정적 파일. 외부 CDN·이미지·프레임워크는 사용하지 않는다 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ===== 상단 바: 서비스 이름 + 로그인/회원가입/로그아웃 버튼 ===== -->
+  <header class="topbar">
+    <div class="brand">ClipVault <span class="badge">클립볼트</span></div>
+    <div class="auth-area">
+      <span id="who" class="who" hidden></span>
+      <button id="btn-open-login" type="button">로그인</button>
+      <button id="btn-open-register" type="button" class="ghost">회원가입</button>
+      <button id="btn-logout" type="button" class="ghost" hidden>로그아웃</button>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ===== PIN 즉시 열람 박스: 로그인 없이 누구나 사용 (1회 열람 후 서버에서 원문 파기) ===== -->
+    <section class="card" id="redeem-card">
+      <h2><span class="tag">SECRET</span> 6자리 PIN으로 1회 열람</h2>
+      <p class="muted">한 번 열람하면 서버에서 원문이 영구 삭제됩니다. 다시 볼 수 없으니 바로 복사하세요.</p>
+      <div class="row">
+        <input id="pin-input" class="pin" type="text" inputmode="numeric" maxlength="6"
+               placeholder="000000" autocomplete="off">
+        <button id="btn-redeem" type="button">열람</button>
+      </div>
+      <div id="redeem-result" hidden>
+        <pre id="redeem-text" class="code-box"></pre>
+        <button id="btn-copy-redeem" type="button" class="ghost">복사</button>
+      </div>
+    </section>
+
+    <!-- ===== 로그인 사용자 전용 영역 (로그인 전에는 숨김) ===== -->
+    <section id="app-area" hidden>
+
+      <!-- 새 클립 입력기: 같은 텍스트를 '내 클립보드 저장' 또는 '1회용 PIN 발급'으로 보낸다 -->
+      <section class="card">
+        <h2><span class="tag">NEW</span> 새 클립</h2>
+        <textarea id="clip-input" rows="4" placeholder="명령어, 링크, 코드 조각, 메모를 붙여넣으세요"></textarea>
+        <div class="row">
+          <button id="btn-save" type="button">내 클립보드 저장</button>
+          <button id="btn-issue" type="button" class="accent">1회용 공유 PIN 발급</button>
+        </div>
+        <div id="issued" hidden>
+          <span class="muted">발급된 PIN</span>
+          <span id="issued-pin" class="pin-view"></span>
+          <button id="btn-copy-pin" type="button" class="ghost">복사</button>
+        </div>
+      </section>
+
+      <!-- 내 클립 목록 -->
+      <section class="card">
+        <div class="list-head">
+          <h2><span class="tag">STREAM</span> 내 클립</h2>
+          <button id="btn-refresh" type="button" class="ghost">새로고침</button>
+        </div>
+        <ul id="clip-list" class="clips"></ul>
+        <p id="clip-empty" class="muted" hidden>저장된 클립이 없습니다.</p>
+      </section>
+    </section>
+
+    <!-- 비로그인 안내 -->
+    <section id="guest-hint" class="card muted">
+      로그인하면 여러 기기에서 텍스트를 저장·동기화하고, 1회용 공유 PIN을 발급할 수 있습니다.
+    </section>
+  </main>
+
+  <!-- ===== 로그인/회원가입 모달: HTML 기본 <dialog> 요소 사용 ===== -->
+  <dialog id="auth-dialog">
+    <form id="auth-form" method="dialog">
+      <h2 id="auth-title">로그인</h2>
+      <label>아이디 <input id="auth-username" type="text" minlength="3" maxlength="50" required autocomplete="username"></label>
+      <label>비밀번호 <input id="auth-password" type="password" minlength="4" maxlength="100" required autocomplete="current-password"></label>
+      <p id="auth-msg" class="error" hidden></p>
+      <div class="row">
+        <button id="auth-submit" type="submit">확인</button>
+        <button id="auth-cancel" type="button" class="ghost">취소</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 복사/오류 안내용 작은 알림 -->
+  <div id="toast" class="toast" hidden></div>
+
+  <!-- ===== 하단 상태 바: 로그인 사용자 / Redis 세션 / 마지막 응답을 처리한 서버 ===== -->
+  <footer class="statusbar">
+    <span>user: <b id="st-user">비로그인</b></span>
+    <span>cv-redis 세션: <b id="st-session">없음</b></span>
+    <span>worker: <b id="st-worker">-</b></span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>

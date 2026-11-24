@@ -1,0 +1,16 @@
+# 실제 비밀번호가 들어가는 환경 파일 (예시는 .env.example)
+.env
+
+# DB 백업 덤프 (개인 데이터가 들어갈 수 있음)
+*.sql.bak
+backup/
+
+# Python
+__pycache__/
+*.pyc
+
+# OS / 편집기
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

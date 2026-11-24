@@ -1,0 +1,158 @@
+/* ClipVault 스타일: 순수 CSS, 외부 이미지 없음, 모노스페이스 개발자 도구 느낌.
+   색상은 CSS 변수로 모았고, OS 설정(다크/라이트)에 맞춰 자동으로 바뀐다. */
+
+:root {
+  --bg: #f4f5f7;
+  --card: #ffffff;
+  --text: #1c2128;
+  --muted: #6b7280;
+  --line: #d8dce2;
+  --accent: #0d7a5f;      /* 주요 강조색 (초록) */
+  --accent-text: #ffffff;
+  --danger: #c0392b;
+  --code-bg: #eef0f3;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1419;
+    --card: #171d24;
+    --text: #d7dde4;
+    --muted: #8b96a3;
+    --line: #2a323c;
+    --accent: #3ddc97;
+    --accent-text: #0b1210;
+    --danger: #ff6b5e;
+    --code-bg: #0c1116;
+  }
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  padding-bottom: 48px;            /* 하단 고정 상태 바에 가려지지 않게 여백 */
+  background: var(--bg);
+  color: var(--text);
+  font-family: Consolas, "Fira Code", "D2Coding", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ---- 상단 바 ---- */
+.topbar {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 20px;
+  background: var(--card);
+  border-bottom: 1px solid var(--line);
+}
+.brand { font-size: 18px; font-weight: bold; }
+.auth-area { display: flex; gap: 8px; align-items: center; }
+.who { color: var(--muted); margin-right: 4px; }
+
+/* 이미지 대신 순수 CSS로 만든 배지 */
+.badge, .tag {
+  display: inline-block;
+  padding: 1px 8px;
+  border: 1px solid var(--accent);
+  border-radius: 999px;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: normal;
+}
+
+/* ---- 레이아웃 / 카드 ---- */
+main { max-width: 820px; margin: 20px auto; padding: 0 16px; display: grid; gap: 16px; }
+.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 16px;
+}
+h2 { margin: 0 0 8px; font-size: 15px; }
+.muted { color: var(--muted); }
+.error { color: var(--danger); margin: 6px 0; }
+.row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; align-items: center; }
+.list-head { display: flex; justify-content: space-between; align-items: center; }
+
+/* ---- 입력 요소 ---- */
+input, textarea {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--code-bg);
+  color: var(--text);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  font: inherit;
+}
+textarea { resize: vertical; }
+input:focus, textarea:focus { outline: 2px solid var(--accent); }
+input.pin { width: 160px; font-size: 18px; letter-spacing: 6px; text-align: center; }
+
+/* ---- 버튼 ---- */
+button {
+  padding: 7px 14px;
+  background: var(--accent);
+  color: var(--accent-text);
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  font: inherit;
+  cursor: pointer;
+}
+button:hover { opacity: 0.88; }
+button.ghost { background: transparent; color: var(--text); border-color: var(--line); }
+button.accent { background: transparent; color: var(--accent); }
+button.danger { background: transparent; color: var(--danger); border-color: var(--danger); }
+button:disabled { opacity: 0.5; cursor: wait; }
+
+/* ---- 코드/텍스트 박스, PIN 표시 ---- */
+.code-box {
+  margin: 8px 0;
+  padding: 10px;
+  background: var(--code-bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  white-space: pre-wrap;          /* 줄바꿈 유지 + 긴 줄 자동 줄바꿈 */
+  word-break: break-all;
+}
+#issued { margin-top: 10px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.pin-view { font-size: 22px; letter-spacing: 6px; color: var(--accent); font-weight: bold; }
+
+/* ---- 클립 목록 ---- */
+.clips { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 10px; }
+.clip { border: 1px solid var(--line); border-radius: 6px; padding: 10px; background: var(--code-bg); }
+.clip pre { margin: 0 0 8px; white-space: pre-wrap; word-break: break-all; font: inherit; }
+.clip-foot { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.clip-time { color: var(--muted); font-size: 12px; }
+.clip-actions { display: flex; gap: 6px; }
+
+/* ---- 모달 (<dialog>) ---- */
+dialog {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  color: var(--text);
+  padding: 20px;
+  width: min(360px, 92vw);
+}
+dialog::backdrop { background: rgba(0, 0, 0, 0.55); }
+dialog label { display: block; margin: 10px 0; }
+
+/* ---- 알림(토스트) ---- */
+.toast {
+  position: fixed; left: 50%; bottom: 60px; transform: translateX(-50%);
+  background: var(--text); color: var(--bg);
+  padding: 8px 16px; border-radius: 6px;
+}
+
+/* ---- 하단 고정 상태 바 ---- */
+.statusbar {
+  position: fixed; left: 0; right: 0; bottom: 0;
+  display: flex; gap: 24px; flex-wrap: wrap;
+  padding: 8px 20px;
+  background: var(--card);
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 12px;
+}
+.statusbar b { color: var(--accent); }
